@@ -1,6 +1,6 @@
 {
   "ivan-cert": true,
-  "ivan-levels": false,
+  "ivan-levels": true,
   "ivan-puntos": false,
   "ivan-back": false,
   "ivan-locations": false,
