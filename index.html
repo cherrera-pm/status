@@ -458,7 +458,7 @@
   // ── CONFIG ──────────────────────────────────────────
   const REPO_OWNER  = 'cherrera-pm';
   const REPO_NAME   = 'status';
-  const STATUS_PATH = 'docs/status.json';
+  const STATUS_PATH = 'status.json';
   const API_BASE    = 'https://api.github.com';
 
   // Token se lee desde el hash de la URL: ...jomi/#ghp_xxx
@@ -569,21 +569,28 @@
   }
 
   // ── LOAD STATUS ON START ───────────────────────────────
+  // Lee directo desde la GitHub API (sin caché de CDN)
   async function loadStatus() {
     try {
-      const res = await fetch('status.json?_=' + Date.now());
+      const headers = ghToken ? { Authorization: `token ${ghToken}` } : {};
+      const res = await fetch(
+        `${API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${STATUS_PATH}`,
+        { headers }
+      );
       if (!res.ok) return;
-      const data = await res.json();
+      const meta = await res.json();
+      fileSha = meta.sha; // guardamos el SHA ya de paso, evita un fetch extra
+      const json = JSON.parse(atob(meta.content.replace(/\n/g, '')));
       document.querySelectorAll('input[data-id]').forEach(cb => {
         const id = cb.dataset.id;
-        if (data[id] === true) {
+        if (json[id] === true) {
           cb.checked = true;
           applyDone(cb);
           counts[cb.dataset.person]++;
         }
       });
       refreshUI();
-    } catch(e) { /* status.json not found or error, start fresh */ }
+    } catch(e) { console.warn('loadStatus error:', e); }
   }
 
   // ── COLLECT CURRENT STATUS ────────────────────────────
@@ -628,8 +635,7 @@
 
   // ── INIT ──────────────────────────────────────────────
   updateConfigBtn();
-  loadStatus();
-  if (ghToken) fetchSha();
+  loadStatus(); // también cachea el SHA internamente
 </script>
 </body>
 </html>
