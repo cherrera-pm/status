@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprint Planning — Jomi LLC</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f0f4f8;
+    color: #1e293b;
+    padding: 28px 20px;
+    min-width: 960px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+    border-radius: 16px;
+    padding: 24px 32px;
+    margin-bottom: 20px;
+    color: white;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header h1 { font-size: 20px; font-weight: 700; }
+  .header .dates { font-size: 12px; opacity: 0.75; margin-top: 3px; }
+
+  .header-actions { display: flex; align-items: center; gap: 10px; }
+
+  /* Save status indicator */
+  .save-status {
+    font-size: 11.5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    background: rgba(255,255,255,0.15);
+    padding: 5px 10px;
+    border-radius: 20px;
+  }
+  .save-status.visible { opacity: 1; }
+  .save-status.saving { color: #fde68a; }
+  .save-status.saved  { color: #86efac; }
+  .save-status.error  { color: #fca5a5; }
+
+  /* Token config button */
+  .btn-config {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background 0.2s;
+  }
+  .btn-config:hover { background: rgba(255,255,255,0.28); }
+  .btn-config.configured { border-color: #86efac; color: #86efac; }
+
+  /* Token modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 14px;
+    padding: 28px;
+    width: 440px;
+    max-width: 95vw;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .modal p { font-size: 12.5px; color: #64748b; margin-bottom: 16px; line-height: 1.5; }
+  .modal input[type="text"], .modal input[type="password"] {
+    width: 100%;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+    outline: none;
+    margin-bottom: 12px;
+    font-family: monospace;
+  }
+  .modal input:focus { border-color: #2563eb; }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+  .btn-primary {
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-primary:hover { background: #1d4ed8; }
+  .btn-cancel {
+    background: #f1f5f9;
+    color: #475569;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 18px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .btn-cancel:hover { background: #e2e8f0; }
+  .modal-note {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 11.5px;
+    color: #0369a1;
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+
+  /* Progress */
+  .progress-summary {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .progress-total { text-align: center; }
+  .progress-total .big { font-size: 32px; font-weight: 800; line-height: 1; }
+  .progress-total .lbl { font-size: 11px; opacity: 0.7; margin-top: 2px; }
+  .progress-right { flex: 1; min-width: 200px; }
+  .progress-bar-wrap {
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    height: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: #34d399;
+    border-radius: 20px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+  .person-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+  .person-pill {
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11.5px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .person-pill .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .person-pill .pill-count { opacity: 0.8; }
+
+  /* ── DEP BANNER ── */
+  .dep-banner {
+    background: #fef9c3;
+    border: 1px solid #fde047;
+    border-radius: 10px;
+    padding: 9px 16px;
+    font-size: 12px;
+    color: #713f12;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  /* ── GANTT ── */
+  .gantt-card {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+  .gantt-scroll { overflow-x: auto; }
+
+  table.gantt {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 940px;
+  }
+
+  .gantt thead tr.weeks th {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #94a3b8;
+    text-align: center;
+    padding: 8px 4px 2px;
+  }
+  .gantt thead tr.weeks th.task-col { text-align: left; }
+
+  .gantt thead tr.days th {
+    font-size: 10px;
+    color: #64748b;
+    font-weight: 600;
+    text-align: center;
+    padding: 3px 2px 8px;
+    border-bottom: 2px solid #e2e8f0;
+    min-width: 46px;
+    white-space: nowrap;
+  }
+  .gantt thead tr.days th.task-col {
+    text-align: left;
+    min-width: 230px;
+    padding-left: 16px;
+    font-size: 11px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .gantt thead tr.days th.chk-col { min-width: 36px; width: 36px; }
+
+  .gantt tbody tr.group-header td {
+    background: #f8fafc;
+    padding: 7px 16px;
+    border-top: 2px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .group-label { display: flex; align-items: center; gap: 10px; }
+  .group-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: white;
+    flex-shrink: 0;
+  }
+  .group-name { font-size: 13px; font-weight: 700; color: #334155; }
+  .group-role { font-size: 11px; color: #94a3b8; margin-left: 4px; }
+  .group-stats { margin-left: auto; font-size: 11px; color: #64748b; font-weight: 600; }
+
+  .gantt tbody tr.task-row:hover { background: #f8fafc; }
+  .gantt tbody tr.task-row.done td { opacity: 0.4; }
+  .gantt tbody tr.task-row.done .task-name { text-decoration: line-through; }
+
+  .gantt tbody tr.task-row td {
+    border-bottom: 1px solid #f1f5f9;
+    padding: 5px 2px;
+    vertical-align: middle;
+  }
+  .gantt tbody tr.task-row td.chk-col { text-align: center; padding: 5px 6px; }
+  .gantt tbody tr.task-row td.task-col { padding: 7px 10px 7px 16px; }
+
+  input[type="checkbox"] {
+    width: 16px; height: 16px;
+    cursor: pointer;
+    accent-color: #2563eb;
+  }
+
+  .task-label { display: flex; flex-direction: column; gap: 1px; }
+  .task-name { font-size: 12.5px; font-weight: 600; color: #1e293b; line-height: 1.3; }
+  .task-meta { font-size: 11px; color: #94a3b8; }
+  .dep-tag { font-size: 10.5px; color: #d97706; font-weight: 500; }
+
+  td.g-empty { padding: 5px 2px; }
+  td.g-bar { padding: 5px 2px; }
+  .bar {
+    height: 22px;
+    border-radius: 6px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    color: white;
+  }
+  .bar-ivan   { background: #3b82f6; }
+  .bar-miguel { background: #10b981; }
+  .bar-elvis  { background: #8b5cf6; }
+  .bar-dep    { background: #f59e0b; }
+  .bar-overflow { background: #ef4444; opacity: 0.7; border: 2px dashed #dc2626; }
+</style>
+</head>
+<body>
+
+<!-- ═══════ TOKEN MODAL ═══════ -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3>🔑 Configurar acceso a GitHub</h3>
+    <p>Para guardar el estado de las tareas necesitás un <strong>Personal Access Token</strong> de GitHub con permiso <code>repo</code>. El token solo se guarda en memoria mientras tenés la página abierta.</p>
+    <div class="modal-note">
+      📋 <strong>Cómo generarlo:</strong> GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token → seleccioná <strong>repo</strong> → Generate.
+    </div>
+    <input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-primary" onclick="saveToken()">Guardar y continuar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ HEADER ═══════ -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>📅 Sprint — Jomi LLC</h1>
+      <div class="dates">08 abril 2026 → 28 abril 2026 · 15 días laborables · 3 personas</div>
+    </div>
+    <div class="header-actions">
+      <div class="save-status" id="save-status">
+        <span id="save-icon">⏳</span>
+        <span id="save-msg">Guardando...</span>
+      </div>
+      <button class="btn-config" id="btn-config" onclick="openModal()">
+        🔑 <span id="btn-config-label">Configurar token</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="progress-summary">
+    <div class="progress-total">
+      <div class="big" id="pct">0%</div>
+      <div class="lbl">completado</div>
+    </div>
+    <div class="progress-right">
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="bar-fill"></div>
+      </div>
+      <div class="person-pills">
+        <div class="person-pill">
+          <div class="dot" style="background:#60a5fa"></div>
+          Ivan&nbsp;<span class="pill-count" id="cnt-ivan">0/8</span>
+        </div>
+        <div class="person-pill">
+          <div class="dot" style="background:#34d399"></div>
+          Miguel&nbsp;<span class="pill-count" id="cnt-miguel">0/9</span>
+        </div>
+        <div class="person-pill">
+          <div class="dot" style="background:#c4b5fd"></div>
+          Elvis&nbsp;<span class="pill-count" id="cnt-elvis">0/4</span>
+        </div>
+        <div class="person-pill" style="margin-left:auto;">
+          <span id="cnt-total">0 / 21 tareas</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ DEP BANNER ═══════ -->
+<div class="dep-banner">
+  ⚠️&nbsp; <strong>Dependencia:</strong>&nbsp; El "Home — Listar servicios" de Ivan no puede iniciar hasta que Miguel complete el <strong>#4 Categories</strong> (est. listo Martes 14/4). &nbsp;|&nbsp;
+  <strong>Miguel #9</strong> desborda el sprint en 1 día.
+</div>
+
+<!-- ═══════ GANTT ═══════ -->
+<div class="gantt-card">
+  <div class="gantt-scroll">
+    <table class="gantt">
+      <thead>
+        <tr class="weeks">
+          <th class="chk-col"></th>
+          <th class="task-col"></th>
+          <th colspan="3">Semana 1</th>
+          <th colspan="5">Semana 2</th>
+          <th colspan="5">Semana 3</th>
+          <th colspan="2">Semana 4</th>
+        </tr>
+        <tr class="days">
+          <th class="chk-col"></th>
+          <th class="task-col">Tarea / Persona</th>
+          <th>Mié<br>8/4</th><th>Jue<br>9/4</th><th>Vie<br>10/4</th>
+          <th>Lun<br>13/4</th><th>Mar<br>14/4</th><th>Mié<br>15/4</th><th>Jue<br>16/4</th><th>Vie<br>17/4</th>
+          <th>Lun<br>20/4</th><th>Mar<br>21/4</th><th>Mié<br>22/4</th><th>Jue<br>23/4</th><th>Vie<br>24/4</th>
+          <th>Lun<br>27/4</th><th>Mar<br>28/4</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- ═══ IVAN ═══ -->
+        <tr class="group-header">
+          <td colspan="17">
+            <div class="group-label">
+              <div class="group-avatar" style="background:#3b82f6">IV</div>
+              <span class="group-name">Ivan</span>
+              <span class="group-role">Mobile / Frontend</span>
+              <span class="group-stats" id="grp-ivan">0 / 8</span>
+            </div>
+          </td>
+        </tr>
+        <tr class="task-row" data-person="ivan"><td class="chk-col"><input type="checkbox" data-id="ivan-cert" data-person="ivan" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">Certificados — API Tiers</span><span class="task-meta">1 día · 08/04</span></div></td><td class="g-bar"><div class="bar bar-ivan"></div></td><td class="g-empty" colspan="14"></td></tr>
+        <tr class="task-row" data-person="ivan"><td class="chk-col"><input type="checkbox" data-id="ivan-levels" data-person="ivan" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">Levels — API Levels</span><span class="task-meta">1 día · 09/04</span></div></td><td class="g-empty"></td><td class="g-bar"><div class="bar bar-ivan"></div></td><td class="g-empty" colspan="13"></td></tr>
+        <tr class="task-row" data-person="ivan"><td class="chk-col"><input type="checkbox" data-id="ivan-puntos" data-person="ivan" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">Mostrar puntos (endpoint user)</span><span class="task-meta">1 día · 10/04</span></div></td><td class="g-empty" colspan="2"></td><td class="g-bar"><div class="bar bar-ivan"></div></td><td class="g-empty" colspan="12"></td></tr>
+        <tr class="task-row" data-person="ivan"><td class="chk-col"><input type="checkbox" data-id="ivan-back" data-person="ivan" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">Back en agenda — footer</span><span class="task-meta">1 día · 13/04</span></div></td><td class="g-empty" colspan="3"></td><td class="g-bar"><div class="bar bar-ivan"></div></td><td class="g-empty" colspan="11"></td></tr>
+        <tr class="task-row" data-person="ivan"><td class="chk-col"><input type="checkbox" data-id="ivan-locations" data-person="ivan" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">Locations — Zonas de trabajo</span><span class="task-meta">2 días · 14/04 – 15/04</span></div></td><td class="g-empty" colspan="4"></td><td class="g-bar" colspan="2"><div class="bar bar-ivan"></div></td><td class="g-empty" colspan="9"></td></tr>
+        <tr class="task-row" data-person="ivan"><td class="chk-col"><input type="checkbox" data-id="ivan-home" data-person="ivan" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">Home — Listar servicios (categories)</span><span class="task-meta">2 días · 16/04 – 17/04</span><span class="dep-tag">⚠ Espera Miguel #4</span></div></td><td class="g-empty" colspan="6"></td><td class="g-bar" colspan="2"><div class="bar bar-dep"></div></td><td class="g-empty" colspan="7"></td></tr>
+        <tr class="task-row" data-person="ivan"><td class="chk-col"><input type="checkbox" data-id="ivan-mockup" data-person="ivan" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">Mockup UX — Comunidad</span><span class="task-meta">2 días · 20/04 – 21/04</span></div></td><td class="g-empty" colspan="8"></td><td class="g-bar" colspan="2"><div class="bar bar-ivan"></div></td><td class="g-empty" colspan="5"></td></tr>
+        <tr class="task-row" data-person="ivan"><td class="chk-col"><input type="checkbox" data-id="ivan-estilos" data-person="ivan" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">Estilos de texto — Definición global</span><span class="task-meta">2 días · 22/04 – 23/04</span></div></td><td class="g-empty" colspan="10"></td><td class="g-bar" colspan="2"><div class="bar bar-ivan"></div></td><td class="g-empty" colspan="3"></td></tr>
+
+        <!-- ═══ MIGUEL ═══ -->
+        <tr class="group-header">
+          <td colspan="17">
+            <div class="group-label">
+              <div class="group-avatar" style="background:#10b981">MG</div>
+              <span class="group-name">Miguel</span>
+              <span class="group-role">Backend</span>
+              <span class="group-stats" id="grp-miguel">0 / 9</span>
+            </div>
+          </td>
+        </tr>
+        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-1" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#1 — Endpoint points/balance</span><span class="task-meta">1 día · 08/04</span></div></td><td class="g-bar"><div class="bar bar-miguel"></div></td><td class="g-empty" colspan="14"></td></tr>
+        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-2" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#2 — Endpoints Points (users + admin)</span><span class="task-meta">1 día · 09/04</span></div></td><td class="g-empty"></td><td class="g-bar"><div class="bar bar-miguel"></div></td><td class="g-empty" colspan="13"></td></tr>
+        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-3" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#3 — Endpoints de agenda</span><span class="task-meta">1 día · 10/04</span></div></td><td class="g-empty" colspan="2"></td><td class="g-bar"><div class="bar bar-miguel"></div></td><td class="g-empty" colspan="12"></td></tr>
+        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-4" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#4 — Endpoints Categories</span><span class="task-meta">2 días · 13/04 – 14/04</span><span class="dep-tag">⚠ Ivan espera este task</span></div></td><td class="g-empty" colspan="3"></td><td class="g-bar" colspan="2"><div class="bar bar-dep"></div></td><td class="g-empty" colspan="10"></td></tr>
+        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-5" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#5 — Builder methods (home rows backend)</span><span class="task-meta">4 días · 15/04 – 20/04</span></div></td><td class="g-empty" colspan="5"></td><td class="g-bar" colspan="4"><div class="bar bar-miguel"></div></td><td class="g-empty" colspan="6"></td></tr>
+        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-6" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#6 — Bugs Location / Zonas de trabajo</span><span class="task-meta">2 días · 21/04 – 22/04</span></div></td><td class="g-empty" colspan="9"></td><td class="g-bar" colspan="2"><div class="bar bar-miguel"></div></td><td class="g-empty" colspan="4"></td></tr>
+        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-7" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#7 — Endpoints de mensajes</span><span class="task-meta">1 día · 23/04</span></div></td><td class="g-empty" colspan="11"></td><td class="g-bar"><div class="bar bar-miguel"></div></td><td class="g-empty" colspan="3"></td></tr>
+        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-8" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#8 — Integración endpoints pendientes</span><span class="task-meta">2 días · 24/04 – 27/04</span></div></td><td class="g-empty" colspan="12"></td><td class="g-bar" colspan="2"><div class="bar bar-miguel"></div></td><td class="g-empty"></td></tr>
+        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-9" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#9 — Registro de proveedores</span><span class="task-meta">2 días · 28/04+&nbsp;<span style="color:#dc2626">⚡ desborda sprint</span></span></div></td><td class="g-empty" colspan="14"></td><td class="g-bar"><div class="bar bar-overflow">+1d</div></td></tr>
+
+        <!-- ═══ ELVIS ═══ -->
+        <tr class="group-header">
+          <td colspan="17">
+            <div class="group-label">
+              <div class="group-avatar" style="background:#8b5cf6">EL</div>
+              <span class="group-name">Elvis</span>
+              <span class="group-role">Mobile / Frontend</span>
+              <span class="group-stats" id="grp-elvis">0 / 4</span>
+            </div>
+          </td>
+        </tr>
+        <tr class="task-row" data-person="elvis"><td class="chk-col"><input type="checkbox" data-id="elvis-01" data-person="elvis" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">TASK-01 — Agenda unificada + eventos</span><span class="task-meta">3 días · 08/04 – 10/04</span></div></td><td class="g-bar" colspan="3"><div class="bar bar-elvis"></div></td><td class="g-empty" colspan="12"></td></tr>
+        <tr class="task-row" data-person="elvis"><td class="chk-col"><input type="checkbox" data-id="elvis-04" data-person="elvis" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">TASK-04 — Home dinámico / widgets</span><span class="task-meta">1 día · 13/04</span></div></td><td class="g-empty" colspan="3"></td><td class="g-bar"><div class="bar bar-elvis"></div></td><td class="g-empty" colspan="11"></td></tr>
+        <tr class="task-row" data-person="elvis"><td class="chk-col"><input type="checkbox" data-id="elvis-02" data-person="elvis" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">TASK-02 — Búsqueda v2 guiada por IA</span><span class="task-meta">1 día · 14/04</span></div></td><td class="g-empty" colspan="4"></td><td class="g-bar"><div class="bar bar-elvis"></div></td><td class="g-empty" colspan="10"></td></tr>
+        <tr class="task-row" data-person="elvis"><td class="chk-col"><input type="checkbox" data-id="elvis-03" data-person="elvis" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">TASK-03 — Mensajes: UX + backend</span><span class="task-meta">1 día · 15/04</span></div></td><td class="g-empty" colspan="5"></td><td class="g-bar"><div class="bar bar-elvis"></div></td><td class="g-empty" colspan="9"></td></tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  // ── CONFIG ──────────────────────────────────────────
+  const REPO_OWNER  = 'cherrera-pm';
+  const REPO_NAME   = 'status';
+  const STATUS_PATH = 'docs/status.json';
+  const API_BASE    = 'https://api.github.com';
+
+  // Token se lee desde el hash de la URL: ...jomi/#ghp_xxx
+  // Nunca se guarda en el archivo ni en el servidor.
+  function getTokenFromHash() {
+    const hash = window.location.hash.slice(1).trim();
+    return hash.length > 10 ? hash : null;
+  }
+
+  // ── STATE ────────────────────────────────────────────
+  const totals = { ivan: 8, miguel: 9, elvis: 4 };
+  const counts = { ivan: 0, miguel: 0, elvis: 0 };
+  const grandTotal = 21;
+  let ghToken  = getTokenFromHash();
+  let fileSha  = null;
+  let saveTimer = null;
+
+  // ── TOKEN MODAL ──────────────────────────────────────
+  function openModal() {
+    document.getElementById('modal').classList.add('open');
+    document.getElementById('token-input').focus();
+  }
+  function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+  }
+  function saveToken() {
+    const val = document.getElementById('token-input').value.trim();
+    if (!val) return;
+    ghToken = val;
+    // Update the URL hash so el link quede guardado en el navegador
+    window.location.hash = val;
+    updateConfigBtn();
+    closeModal();
+    fetchSha();
+  }
+  function updateConfigBtn() {
+    const btn = document.getElementById('btn-config');
+    if (ghToken) {
+      btn.classList.add('configured');
+      document.getElementById('btn-config-label').textContent = 'Token activo ✓';
+    }
+  }
+  document.getElementById('token-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') saveToken();
+  });
+
+  // ── GITHUB API ────────────────────────────────────────
+  async function fetchSha() {
+    if (!ghToken) return;
+    try {
+      const res = await fetch(
+        `${API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${STATUS_PATH}`,
+        { headers: { Authorization: `token ${ghToken}` } }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        fileSha = data.sha;
+      }
+    } catch(e) { /* silent */ }
+  }
+
+  async function pushStatus(statusObj) {
+    if (!ghToken) {
+      showSaveStatus('error', '❌ Configurá el token primero');
+      return;
+    }
+    if (!fileSha) await fetchSha();
+
+    showSaveStatus('saving', '⏳ Guardando...');
+    try {
+      const content = btoa(JSON.stringify(statusObj, null, 2));
+      const res = await fetch(
+        `${API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${STATUS_PATH}`,
+        {
+          method: 'PUT',
+          headers: {
+            Authorization: `token ${ghToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: '📋 Update sprint task status',
+            content,
+            sha: fileSha
+          })
+        }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        fileSha = data.content.sha;
+        showSaveStatus('saved', '✅ Guardado');
+      } else {
+        const err = await res.json();
+        showSaveStatus('error', '❌ Error al guardar');
+        console.error(err);
+      }
+    } catch(e) {
+      showSaveStatus('error', '❌ Sin conexión');
+    }
+  }
+
+  function showSaveStatus(type, msg) {
+    const el = document.getElementById('save-status');
+    el.className = 'save-status visible ' + type;
+    el.innerHTML = msg;
+    if (type === 'saved') {
+      setTimeout(() => el.classList.remove('visible'), 3000);
+    }
+  }
+
+  // ── LOAD STATUS ON START ───────────────────────────────
+  async function loadStatus() {
+    try {
+      const res = await fetch('status.json?_=' + Date.now());
+      if (!res.ok) return;
+      const data = await res.json();
+      document.querySelectorAll('input[data-id]').forEach(cb => {
+        const id = cb.dataset.id;
+        if (data[id] === true) {
+          cb.checked = true;
+          applyDone(cb);
+          counts[cb.dataset.person]++;
+        }
+      });
+      refreshUI();
+    } catch(e) { /* status.json not found or error, start fresh */ }
+  }
+
+  // ── COLLECT CURRENT STATUS ────────────────────────────
+  function collectStatus() {
+    const obj = {};
+    document.querySelectorAll('input[data-id]').forEach(cb => {
+      obj[cb.dataset.id] = cb.checked;
+    });
+    return obj;
+  }
+
+  // ── TICK (checkbox change) ────────────────────────────
+  function tick(cb) {
+    const person = cb.dataset.person;
+    if (cb.checked) { counts[person]++; applyDone(cb); }
+    else            { counts[person]--; removeDone(cb); }
+    refreshUI();
+
+    // Debounce save: wait 800ms after last change
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => pushStatus(collectStatus()), 800);
+  }
+
+  function applyDone(cb)  { cb.closest('tr').classList.add('done');    }
+  function removeDone(cb) { cb.closest('tr').classList.remove('done'); }
+
+  // ── REFRESH UI COUNTERS ────────────────────────────────
+  function refreshUI() {
+    const total = counts.ivan + counts.miguel + counts.elvis;
+    const pct   = Math.round((total / grandTotal) * 100);
+
+    document.getElementById('pct').textContent      = pct + '%';
+    document.getElementById('bar-fill').style.width = pct + '%';
+    document.getElementById('cnt-total').textContent = total + ' / ' + grandTotal + ' tareas';
+
+    ['ivan','miguel','elvis'].forEach(p => {
+      const s = counts[p] + '/' + totals[p];
+      document.getElementById('cnt-' + p).textContent  = s;
+      document.getElementById('grp-' + p).textContent  = counts[p] + ' / ' + totals[p];
+    });
+  }
+
+  // ── INIT ──────────────────────────────────────────────
+  updateConfigBtn();
+  loadStatus();
+  if (ghToken) fetchSha();
+</script>
+</body>
+</html>
