@@ -213,17 +213,17 @@
   /* ── ADD TASK ── */
   .add-task-btn {
     margin-left: 12px;
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.3);
+    background: #2563eb;
+    border: none;
     color: white;
     border-radius: 20px;
-    padding: 3px 10px;
+    padding: 4px 12px;
     font-size: 11px;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s;
   }
-  .add-task-btn:hover { background: rgba(255,255,255,0.22); }
+  .add-task-btn:hover { background: #1d4ed8; }
 
   .add-task-form-row { display: none; }
   .add-task-form-row.visible { display: table-row; }
@@ -323,12 +323,6 @@
   </div>
 </div>
 
-<!-- ═══════ DEP BANNER ═══════ -->
-<div class="dep-banner">
-  ⚠️&nbsp; <strong>Dependencia:</strong>&nbsp; El "Home — Listar servicios" de Ivan no puede iniciar hasta que Miguel complete el <strong>#4 Categories</strong> (est. listo Martes 14/4). &nbsp;|&nbsp;
-  <strong>Miguel #9</strong> desborda el sprint en 1 día.
-</div>
-
 <!-- ═══════ GANTT ═══════ -->
 <div class="gantt-card">
   <div class="gantt-scroll">
@@ -395,7 +389,7 @@
         <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-6" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#6 — Bugs Location / Zonas de trabajo</span><span class="task-meta">2 días · 21/04 – 22/04</span></div></td><td class="g-empty" colspan="9"></td><td class="g-bar" colspan="2"><div class="bar bar-miguel"></div></td><td class="g-empty" colspan="4"></td></tr>
         <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-7" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#7 — Endpoints de mensajes</span><span class="task-meta">1 día · 23/04</span></div></td><td class="g-empty" colspan="11"></td><td class="g-bar"><div class="bar bar-miguel"></div></td><td class="g-empty" colspan="3"></td></tr>
         <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-8" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#8 — Integración endpoints pendientes</span><span class="task-meta">2 días · 24/04 – 27/04</span></div></td><td class="g-empty" colspan="12"></td><td class="g-bar" colspan="2"><div class="bar bar-miguel"></div></td><td class="g-empty"></td></tr>
-        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-9" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#9 — Registro de proveedores</span><span class="task-meta">2 días · 28/04+&nbsp;<span style="color:#dc2626">⚡ desborda sprint</span></span></div></td><td class="g-empty" colspan="14"></td><td class="g-bar"><div class="bar bar-overflow">+1d</div></td></tr>
+        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-9" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#9 — Registro de proveedores</span><span class="task-meta">2 días · 28/04+</span></div></td><td class="g-empty" colspan="14"></td><td class="g-bar"><div class="bar bar-overflow">+1d</div></td></tr>
         <tr class="add-task-form-row" id="add-form-miguel"><td colspan="17"><div class="add-task-form"><input type="text" id="new-task-miguel" placeholder="Nombre de la tarea..." onkeydown="if(event.key==='Enter')addTask('miguel')"><button class="btn-add" onclick="addTask('miguel')">Agregar</button><button class="btn-cancel" onclick="toggleAddForm('miguel')">Cancelar</button></div></td></tr>
 
         <!-- ═══ ELVIS ═══ -->
