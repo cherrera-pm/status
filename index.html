@@ -209,6 +209,76 @@
   .bar-elvis  { background: #8b5cf6; }
   .bar-dep    { background: #f59e0b; }
   .bar-overflow { background: #ef4444; opacity: 0.7; border: 2px dashed #dc2626; }
+
+  /* ── ADD TASK ── */
+  .add-task-btn {
+    margin-left: 12px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .add-task-btn:hover { background: rgba(255,255,255,0.22); }
+
+  .add-task-form-row { display: none; }
+  .add-task-form-row.visible { display: table-row; }
+  .add-task-form-row td { padding: 8px 16px !important; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
+  .add-task-form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .add-task-form input {
+    flex: 1;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 7px;
+    padding: 6px 12px;
+    font-size: 12.5px;
+    outline: none;
+    color: #1e293b;
+  }
+  .add-task-form input:focus { border-color: #2563eb; }
+  .add-task-form .btn-add {
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .add-task-form .btn-add:hover { background: #1d4ed8; }
+  .add-task-form .btn-cancel {
+    background: none;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 7px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: #64748b;
+    cursor: pointer;
+  }
+  .add-task-form .btn-cancel:hover { border-color: #94a3b8; color: #334155; }
+
+  /* ── CUSTOM TASK ROW ── */
+  .custom-badge { color: #6366f1; font-style: italic; }
+  .delete-col { width: 32px; text-align: center; padding: 5px 4px !important; }
+  .task-delete-btn {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-size: 14px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 4px;
+    border-radius: 4px;
+  }
+  .task-delete-btn:hover { background: #fee2e2; color: #dc2626; }
 </style>
 </head>
 <body>
@@ -291,6 +361,7 @@
               <span class="group-name">Ivan</span>
               <span class="group-role">Mobile / Frontend</span>
               <span class="group-stats" id="grp-ivan">0 / 8</span>
+              <button class="add-task-btn" onclick="toggleAddForm('ivan')">＋ Tarea</button>
             </div>
           </td>
         </tr>
@@ -302,6 +373,7 @@
         <tr class="task-row" data-person="ivan"><td class="chk-col"><input type="checkbox" data-id="ivan-home" data-person="ivan" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">Home — Listar servicios (categories)</span><span class="task-meta">2 días · 16/04 – 17/04</span><span class="dep-tag">⚠ Espera Miguel #4</span></div></td><td class="g-empty" colspan="6"></td><td class="g-bar" colspan="2"><div class="bar bar-dep"></div></td><td class="g-empty" colspan="7"></td></tr>
         <tr class="task-row" data-person="ivan"><td class="chk-col"><input type="checkbox" data-id="ivan-mockup" data-person="ivan" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">Mockup UX — Certificados</span><span class="task-meta">2 días · 20/04 – 21/04</span></div></td><td class="g-empty" colspan="8"></td><td class="g-bar" colspan="2"><div class="bar bar-ivan"></div></td><td class="g-empty" colspan="5"></td></tr>
         <tr class="task-row" data-person="ivan"><td class="chk-col"><input type="checkbox" data-id="ivan-estilos" data-person="ivan" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">Estilos de texto — Definición global</span><span class="task-meta">2 días · 22/04 – 23/04</span></div></td><td class="g-empty" colspan="10"></td><td class="g-bar" colspan="2"><div class="bar bar-ivan"></div></td><td class="g-empty" colspan="3"></td></tr>
+        <tr class="add-task-form-row" id="add-form-ivan"><td colspan="17"><div class="add-task-form"><input type="text" id="new-task-ivan" placeholder="Nombre de la tarea..." onkeydown="if(event.key==='Enter')addTask('ivan')"><button class="btn-add" onclick="addTask('ivan')">Agregar</button><button class="btn-cancel" onclick="toggleAddForm('ivan')">Cancelar</button></div></td></tr>
 
         <!-- ═══ MIGUEL ═══ -->
         <tr class="group-header">
@@ -311,6 +383,7 @@
               <span class="group-name">Miguel</span>
               <span class="group-role">Backend</span>
               <span class="group-stats" id="grp-miguel">0 / 9</span>
+              <button class="add-task-btn" onclick="toggleAddForm('miguel')">＋ Tarea</button>
             </div>
           </td>
         </tr>
@@ -323,6 +396,7 @@
         <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-7" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#7 — Endpoints de mensajes</span><span class="task-meta">1 día · 23/04</span></div></td><td class="g-empty" colspan="11"></td><td class="g-bar"><div class="bar bar-miguel"></div></td><td class="g-empty" colspan="3"></td></tr>
         <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-8" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#8 — Integración endpoints pendientes</span><span class="task-meta">2 días · 24/04 – 27/04</span></div></td><td class="g-empty" colspan="12"></td><td class="g-bar" colspan="2"><div class="bar bar-miguel"></div></td><td class="g-empty"></td></tr>
         <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-9" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#9 — Registro de proveedores</span><span class="task-meta">2 días · 28/04+&nbsp;<span style="color:#dc2626">⚡ desborda sprint</span></span></div></td><td class="g-empty" colspan="14"></td><td class="g-bar"><div class="bar bar-overflow">+1d</div></td></tr>
+        <tr class="add-task-form-row" id="add-form-miguel"><td colspan="17"><div class="add-task-form"><input type="text" id="new-task-miguel" placeholder="Nombre de la tarea..." onkeydown="if(event.key==='Enter')addTask('miguel')"><button class="btn-add" onclick="addTask('miguel')">Agregar</button><button class="btn-cancel" onclick="toggleAddForm('miguel')">Cancelar</button></div></td></tr>
 
         <!-- ═══ ELVIS ═══ -->
         <tr class="group-header">
@@ -332,6 +406,7 @@
               <span class="group-name">Elvis</span>
               <span class="group-role">Mobile / Frontend</span>
               <span class="group-stats" id="grp-elvis">0 / 4</span>
+              <button class="add-task-btn" onclick="toggleAddForm('elvis')">＋ Tarea</button>
             </div>
           </td>
         </tr>
@@ -339,6 +414,7 @@
         <tr class="task-row" data-person="elvis"><td class="chk-col"><input type="checkbox" data-id="elvis-04" data-person="elvis" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">TASK-04 — Home dinámico / widgets</span><span class="task-meta">1 día · 13/04</span></div></td><td class="g-empty" colspan="3"></td><td class="g-bar"><div class="bar bar-elvis"></div></td><td class="g-empty" colspan="11"></td></tr>
         <tr class="task-row" data-person="elvis"><td class="chk-col"><input type="checkbox" data-id="elvis-02" data-person="elvis" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">TASK-02 — Búsqueda v2 guiada por IA</span><span class="task-meta">1 día · 14/04</span></div></td><td class="g-empty" colspan="4"></td><td class="g-bar"><div class="bar bar-elvis"></div></td><td class="g-empty" colspan="10"></td></tr>
         <tr class="task-row" data-person="elvis"><td class="chk-col"><input type="checkbox" data-id="elvis-03" data-person="elvis" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">TASK-03 — Mensajes: UX + backend</span><span class="task-meta">1 día · 15/04</span></div></td><td class="g-empty" colspan="5"></td><td class="g-bar"><div class="bar bar-elvis"></div></td><td class="g-empty" colspan="9"></td></tr>
+        <tr class="add-task-form-row" id="add-form-elvis"><td colspan="17"><div class="add-task-form"><input type="text" id="new-task-elvis" placeholder="Nombre de la tarea..." onkeydown="if(event.key==='Enter')addTask('elvis')"><button class="btn-add" onclick="addTask('elvis')">Agregar</button><button class="btn-cancel" onclick="toggleAddForm('elvis')">Cancelar</button></div></td></tr>
 
       </tbody>
     </table>
@@ -354,10 +430,18 @@
   );
 
   // ── STATE ─────────────────────────────────────────────
-  const totals    = { ivan: 8, miguel: 9, elvis: 4 };
-  const counts    = { ivan: 0, miguel: 0, elvis: 0 };
-  const grandTotal = 21;
-  let saveTimer   = null;
+  const BASE_TOTALS = { ivan: 8, miguel: 9, elvis: 4 };
+  const BASE_GRAND  = 21;
+  const counts      = { ivan: 0, miguel: 0, elvis: 0 };
+  let customTasks   = [];
+  let saveTimer     = null;
+
+  function getTotals() {
+    const t = { ...BASE_TOTALS };
+    customTasks.forEach(ct => t[ct.person]++);
+    return t;
+  }
+  function getGrandTotal() { return BASE_GRAND + customTasks.length; }
 
   // ── SAVE INDICATOR ────────────────────────────────────
   function showSave(type, msg) {
@@ -378,6 +462,13 @@
     if (error) { console.error('Load error:', error); return; }
 
     const status = data.data;
+
+    // Restore custom tasks first so their checkboxes exist in the DOM
+    if (Array.isArray(status._custom_tasks)) {
+      customTasks = status._custom_tasks;
+      customTasks.forEach(ct => renderCustomTask(ct));
+    }
+
     document.querySelectorAll('input[data-id]').forEach(cb => {
       if (status[cb.dataset.id] === true) {
         cb.checked = true;
@@ -394,6 +485,7 @@
     document.querySelectorAll('input[data-id]').forEach(cb => {
       status[cb.dataset.id] = cb.checked;
     });
+    status._custom_tasks = customTasks;
 
     showSave('saving', '⏳ Guardando...');
     const { error } = await db
@@ -408,8 +500,17 @@
   // ── TICK ──────────────────────────────────────────────
   function tick(cb) {
     const person = cb.dataset.person;
-    if (cb.checked) { counts[person]++; cb.closest('tr').classList.add('done');    }
-    else            { counts[person]--; cb.closest('tr').classList.remove('done'); }
+    if (cb.checked) {
+      counts[person]++;
+      cb.closest('tr').classList.add('done');
+      const ct = customTasks.find(t => t.id === cb.dataset.id);
+      if (ct) ct.done = true;
+    } else {
+      counts[person]--;
+      cb.closest('tr').classList.remove('done');
+      const ct = customTasks.find(t => t.id === cb.dataset.id);
+      if (ct) ct.done = false;
+    }
     refreshUI();
     clearTimeout(saveTimer);
     saveTimer = setTimeout(pushStatus, 600);
@@ -417,16 +518,87 @@
 
   // ── UI ────────────────────────────────────────────────
   function refreshUI() {
-    const total = counts.ivan + counts.miguel + counts.elvis;
-    const pct   = Math.round((total / grandTotal) * 100);
+    const totals = getTotals();
+    const gt     = getGrandTotal();
+    const total  = counts.ivan + counts.miguel + counts.elvis;
+    const pct    = Math.round((total / gt) * 100);
     document.getElementById('pct').textContent       = pct + '%';
     document.getElementById('bar-fill').style.width  = pct + '%';
-    document.getElementById('cnt-total').textContent = total + ' / ' + grandTotal + ' tareas';
+    document.getElementById('cnt-total').textContent = total + ' / ' + gt + ' tareas';
     ['ivan','miguel','elvis'].forEach(p => {
-      const s = counts[p] + '/' + totals[p];
-      document.getElementById('cnt-'  + p).textContent = s;
-      document.getElementById('grp-'  + p).textContent = counts[p] + ' / ' + totals[p];
+      document.getElementById('cnt-' + p).textContent = counts[p] + '/' + totals[p];
+      document.getElementById('grp-' + p).textContent = counts[p] + ' / ' + totals[p];
     });
+  }
+
+  // ── TOGGLE ADD FORM ───────────────────────────────────
+  function toggleAddForm(person) {
+    const row = document.getElementById('add-form-' + person);
+    const input = document.getElementById('new-task-' + person);
+    const isVisible = row.classList.toggle('visible');
+    if (isVisible) { input.value = ''; input.focus(); }
+  }
+
+  // ── ADD CUSTOM TASK ───────────────────────────────────
+  function addTask(person) {
+    const input = document.getElementById('new-task-' + person);
+    const name  = input.value.trim();
+    if (!name) { input.focus(); return; }
+
+    const task = { id: crypto.randomUUID(), person, name, done: false };
+    customTasks.push(task);
+    renderCustomTask(task);
+    toggleAddForm(person);
+    refreshUI();
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(pushStatus, 600);
+  }
+
+  // ── DELETE CUSTOM TASK ────────────────────────────────
+  function deleteTask(id, person) {
+    const idx = customTasks.findIndex(t => t.id === id);
+    if (idx === -1) return;
+    const wasDone = customTasks[idx].done;
+    customTasks.splice(idx, 1);
+
+    const row = document.querySelector('tr[data-custom-id="' + id + '"]');
+    if (row) row.remove();
+
+    if (wasDone) counts[person]--;
+    refreshUI();
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(pushStatus, 600);
+  }
+
+  // ── RENDER CUSTOM TASK ────────────────────────────────
+  function renderCustomTask(task) {
+    const formRow = document.getElementById('add-form-' + task.person);
+    const tr = document.createElement('tr');
+    tr.className = 'task-row' + (task.done ? ' done' : '');
+    tr.dataset.person   = task.person;
+    tr.dataset.customId = task.id;
+
+    tr.innerHTML =
+      '<td class="chk-col">' +
+        '<input type="checkbox" data-id="' + task.id + '" data-person="' + task.person + '" onchange="tick(this)"' + (task.done ? ' checked' : '') + '>' +
+      '</td>' +
+      '<td class="task-col">' +
+        '<div class="task-label" style="display:flex;align-items:center;justify-content:space-between;">' +
+          '<div>' +
+            '<span class="task-name">' + escapeHtml(task.name) + '</span>' +
+            '<span class="task-meta custom-badge">✦ tarea personalizada</span>' +
+          '</div>' +
+          '<button class="task-delete-btn" onclick="deleteTask(\'' + task.id + '\',\'' + task.person + '\')" title="Eliminar tarea">✕</button>' +
+        '</div>' +
+      '</td>' +
+      '<td class="g-empty" colspan="15"></td>';
+
+    formRow.parentNode.insertBefore(tr, formRow);
+  }
+
+  // ── ESCAPE HTML ───────────────────────────────────────
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
   // ── INIT ──────────────────────────────────────────────
