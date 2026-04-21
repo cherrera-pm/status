@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprint Planning — Jomi LLC</title>
+<title>Sprint Board — Jomi LLC</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,7 +13,7 @@
     background: #f0f4f8;
     color: #1e293b;
     padding: 28px 20px;
-    min-width: 960px;
+    min-width: 820px;
   }
 
   /* ── HEADER ── */
@@ -51,12 +51,7 @@
   .save-status.saved  { color: #86efac; }
   .save-status.error  { color: #fca5a5; }
 
-  .progress-summary {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
+  .progress-summary { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
   .progress-total { text-align: center; }
   .progress-total .big { font-size: 32px; font-weight: 800; line-height: 1; }
   .progress-total .lbl { font-size: 11px; opacity: 0.7; margin-top: 2px; }
@@ -89,196 +84,193 @@
   .person-pill .dot { width: 8px; height: 8px; border-radius: 50%; }
   .person-pill .pill-count { opacity: 0.8; }
 
-  /* ── DEP BANNER ── */
-  .dep-banner {
-    background: #fef9c3;
-    border: 1px solid #fde047;
-    border-radius: 10px;
-    padding: 9px 16px;
-    font-size: 12px;
-    color: #713f12;
-    margin-bottom: 16px;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
+  /* ── BOARD ── */
+  .board { display: flex; flex-direction: column; gap: 16px; }
 
-  /* ── GANTT ── */
-  .gantt-card {
+  /* ── DEV SECTION ── */
+  .dev-section {
     background: white;
     border-radius: 14px;
     box-shadow: 0 1px 6px rgba(0,0,0,0.08);
     overflow: hidden;
   }
-  .gantt-scroll { overflow-x: auto; }
 
-  table.gantt {
-    border-collapse: collapse;
-    width: 100%;
-    min-width: 940px;
-  }
-
-  .gantt thead tr.weeks th {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #94a3b8;
-    text-align: center;
-    padding: 8px 4px 2px;
-  }
-  .gantt thead tr.weeks th.task-col { text-align: left; }
-
-  .gantt thead tr.days th {
-    font-size: 10px;
-    color: #64748b;
-    font-weight: 600;
-    text-align: center;
-    padding: 3px 2px 8px;
-    border-bottom: 2px solid #e2e8f0;
-    min-width: 46px;
-    white-space: nowrap;
-  }
-  .gantt thead tr.days th.task-col {
-    text-align: left;
-    min-width: 230px;
-    padding-left: 16px;
-    font-size: 11px;
-    color: #94a3b8;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-  }
-  .gantt thead tr.days th.chk-col { min-width: 36px; width: 36px; }
-
-  .gantt tbody tr.group-header td {
-    background: #f8fafc;
-    padding: 7px 16px;
-    border-top: 2px solid #e2e8f0;
-    border-bottom: 1px solid #e2e8f0;
-  }
-  .group-label { display: flex; align-items: center; gap: 10px; }
-  .group-avatar {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 700; color: white;
-    flex-shrink: 0;
-  }
-  .group-name { font-size: 13px; font-weight: 700; color: #334155; }
-  .group-role { font-size: 11px; color: #94a3b8; margin-left: 4px; }
-  .group-stats { margin-left: auto; font-size: 11px; color: #64748b; font-weight: 600; }
-
-  .gantt tbody tr.task-row:hover { background: #f8fafc; }
-  .gantt tbody tr.task-row.done td { opacity: 0.4; }
-  .gantt tbody tr.task-row.done .task-name { text-decoration: line-through; }
-
-  .gantt tbody tr.task-row td {
-    border-bottom: 1px solid #f1f5f9;
-    padding: 5px 2px;
-    vertical-align: middle;
-  }
-  .gantt tbody tr.task-row td.chk-col { text-align: center; padding: 5px 6px; }
-  .gantt tbody tr.task-row td.task-col { padding: 7px 10px 7px 16px; }
-
-  input[type="checkbox"] {
-    width: 16px; height: 16px;
-    cursor: pointer;
-    accent-color: #2563eb;
-  }
-
-  .task-label { display: flex; flex-direction: column; gap: 1px; }
-  .task-name { font-size: 12.5px; font-weight: 600; color: #1e293b; line-height: 1.3; }
-  .task-meta { font-size: 11px; color: #94a3b8; }
-  .dep-tag { font-size: 10.5px; color: #d97706; font-weight: 500; }
-
-  td.g-empty { padding: 5px 2px; }
-  td.g-bar { padding: 5px 2px; }
-  .bar {
-    height: 22px;
-    border-radius: 6px;
-    width: 100%;
+  .dev-header {
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    font-weight: 600;
-    color: white;
+    gap: 10px;
+    padding: 14px 20px;
+    border-bottom: 1px solid #e2e8f0;
   }
-  .bar-ivan   { background: #3b82f6; }
-  .bar-miguel { background: #10b981; }
-  .bar-elvis  { background: #8b5cf6; }
-  .bar-dep    { background: #f59e0b; }
-  .bar-overflow { background: #ef4444; opacity: 0.7; border: 2px dashed #dc2626; }
-
-  /* ── ADD TASK ── */
+  .dev-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: white;
+    flex-shrink: 0;
+  }
+  .dev-name { font-size: 15px; font-weight: 700; color: #1e293b; }
+  .dev-role { font-size: 12px; color: #94a3b8; margin-left: 2px; }
+  .dev-stats { font-size: 12px; color: #64748b; font-weight: 600; margin-left: 6px; background: #f1f5f9; padding: 3px 10px; border-radius: 12px; }
   .add-task-btn {
-    margin-left: 12px;
+    margin-left: auto;
     background: #2563eb;
     border: none;
     color: white;
     border-radius: 20px;
-    padding: 4px 12px;
-    font-size: 11px;
+    padding: 6px 16px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s;
   }
   .add-task-btn:hover { background: #1d4ed8; }
 
-  .add-task-form-row { display: none; }
-  .add-task-form-row.visible { display: table-row; }
-  .add-task-form-row td { padding: 8px 16px !important; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
-  .add-task-form {
-    display: flex;
-    gap: 8px;
-    align-items: center;
+  /* ── ADD TASK FORM ── */
+  .add-task-form-wrap {
+    display: none;
+    padding: 12px 20px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
   }
-  .add-task-form input {
+  .add-task-form-wrap.visible { display: block; }
+  .add-task-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .add-task-form input[type="text"] {
     flex: 1;
+    min-width: 200px;
     border: 1.5px solid #cbd5e1;
     border-radius: 7px;
-    padding: 6px 12px;
-    font-size: 12.5px;
+    padding: 7px 12px;
+    font-size: 13px;
     outline: none;
     color: #1e293b;
   }
-  .add-task-form input:focus { border-color: #2563eb; }
-  .add-task-form .btn-add {
-    background: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 7px;
-    padding: 6px 14px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .add-task-form .btn-add:hover { background: #1d4ed8; }
-  .add-task-form .btn-cancel {
-    background: none;
+  .add-task-form input[type="text"]:focus { border-color: #2563eb; }
+  .days-wrap { display: flex; align-items: center; gap: 6px; }
+  .days-label { font-size: 12px; color: #64748b; white-space: nowrap; }
+  .add-task-form input[type="number"] {
+    width: 64px;
     border: 1.5px solid #cbd5e1;
     border-radius: 7px;
-    padding: 6px 12px;
-    font-size: 12px;
-    color: #64748b;
-    cursor: pointer;
+    padding: 7px 10px;
+    font-size: 13px;
+    outline: none;
+    text-align: center;
+    color: #1e293b;
   }
-  .add-task-form .btn-cancel:hover { border-color: #94a3b8; color: #334155; }
+  .add-task-form input[type="number"]:focus { border-color: #2563eb; }
+  .btn-add {
+    background: #2563eb; color: white; border: none;
+    border-radius: 7px; padding: 7px 16px; font-size: 12px; font-weight: 600; cursor: pointer;
+  }
+  .btn-add:hover { background: #1d4ed8; }
+  .btn-cancel {
+    background: none; border: 1.5px solid #cbd5e1;
+    border-radius: 7px; padding: 7px 12px; font-size: 12px; color: #64748b; cursor: pointer;
+  }
+  .btn-cancel:hover { border-color: #94a3b8; color: #334155; }
 
-  /* ── CUSTOM TASK ROW ── */
-  .custom-badge { color: #6366f1; font-style: italic; }
-  .delete-col { width: 32px; text-align: center; padding: 5px 4px !important; }
-  .task-delete-btn {
-    background: none;
-    border: none;
-    color: #ef4444;
-    font-size: 14px;
-    cursor: pointer;
-    line-height: 1;
-    padding: 2px 4px;
-    border-radius: 4px;
+  /* ── KANBAN ── */
+  .kanban-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    padding: 16px;
+    background: #f8fafc;
   }
-  .task-delete-btn:hover { background: #fee2e2; color: #dc2626; }
+
+  .kanban-col {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .col-header {
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .col-todo .col-header        { color: #64748b;  border-top: 3px solid #94a3b8; }
+  .col-inprogress .col-header  { color: #2563eb;  border-top: 3px solid #3b82f6; background: #eff6ff; }
+  .col-done .col-header        { color: #10b981;  border-top: 3px solid #10b981; background: #f0fdf4; }
+
+  .col-count {
+    background: #e2e8f0; border-radius: 10px;
+    padding: 2px 8px; font-size: 11px; color: #475569;
+  }
+  .col-inprogress .col-count { background: #dbeafe; color: #2563eb; }
+  .col-done .col-count       { background: #dcfce7; color: #16a34a; }
+
+  .col-body {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+
+  /* ── TASK CARD ── */
+  .task-card {
+    background: white;
+    border-radius: 8px;
+    padding: 10px 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    border: 1px solid #e2e8f0;
+    border-left: 3px solid var(--person-color, #94a3b8);
+    transition: box-shadow 0.15s;
+  }
+  .task-card:hover { box-shadow: 0 3px 8px rgba(0,0,0,0.1); }
+  .task-card.done-card { opacity: 0.6; }
+  .task-card.done-card .task-card-name { text-decoration: line-through; color: #94a3b8; }
+
+  .task-card-name { font-size: 12.5px; font-weight: 600; color: #1e293b; line-height: 1.4; }
+  .task-card-meta {
+    font-size: 11px; color: #94a3b8; margin-top: 4px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .custom-badge { color: #6366f1; font-style: italic; }
+
+  .task-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 9px;
+    gap: 4px;
+  }
+  .move-btns { display: flex; gap: 4px; }
+
+  .btn-move-prev {
+    font-size: 10.5px; border: 1px solid #e2e8f0; border-radius: 5px;
+    padding: 3px 8px; cursor: pointer; background: #f8fafc; color: #475569;
+  }
+  .btn-move-prev:hover { background: #e2e8f0; }
+  .btn-move-next {
+    font-size: 10.5px; border: 1px solid #bfdbfe; border-radius: 5px;
+    padding: 3px 8px; cursor: pointer; background: #eff6ff; color: #2563eb; font-weight: 600;
+  }
+  .btn-move-next:hover { background: #dbeafe; }
+  .btn-move-next.complete { background: #f0fdf4; border-color: #bbf7d0; color: #16a34a; }
+  .btn-move-next.complete:hover { background: #dcfce7; }
+
+  .btn-delete-card {
+    background: none; border: none; color: #cbd5e1;
+    font-size: 13px; cursor: pointer; padding: 2px 5px;
+    border-radius: 4px; transition: color 0.15s, background 0.15s;
+    flex-shrink: 0;
+  }
+  .task-card:hover .btn-delete-card { color: #ef4444; }
+  .btn-delete-card:hover { background: #fee2e2 !important; color: #dc2626 !important; }
 </style>
 </head>
 <body>
@@ -287,12 +279,11 @@
 <div class="header">
   <div class="header-top">
     <div>
-      <h1>📅 Sprint — Jomi LLC</h1>
+      <h1>📅 Sprint Board — Jomi LLC</h1>
       <div class="dates">08 abril 2026 → 28 abril 2026 · 15 días laborables · 3 personas</div>
     </div>
     <div id="save-status" class="save-status"></div>
   </div>
-
   <div class="progress-summary">
     <div class="progress-total">
       <div class="big" id="pct">0%</div>
@@ -323,119 +314,164 @@
   </div>
 </div>
 
-<!-- ═══════ GANTT ═══════ -->
-<div class="gantt-card">
-  <div class="gantt-scroll">
-    <table class="gantt">
-      <thead>
-        <tr class="weeks">
-          <th class="chk-col"></th>
-          <th class="task-col"></th>
-          <th colspan="3">Semana 1</th>
-          <th colspan="5">Semana 2</th>
-          <th colspan="5">Semana 3</th>
-          <th colspan="2">Semana 4</th>
-        </tr>
-        <tr class="days">
-          <th class="chk-col"></th>
-          <th class="task-col">Tarea / Persona</th>
-          <th>Mié<br>8/4</th><th>Jue<br>9/4</th><th>Vie<br>10/4</th>
-          <th>Lun<br>13/4</th><th>Mar<br>14/4</th><th>Mié<br>15/4</th><th>Jue<br>16/4</th><th>Vie<br>17/4</th>
-          <th>Lun<br>20/4</th><th>Mar<br>21/4</th><th>Mié<br>22/4</th><th>Jue<br>23/4</th><th>Vie<br>24/4</th>
-          <th>Lun<br>27/4</th><th>Mar<br>28/4</th>
-        </tr>
-      </thead>
-      <tbody>
+<!-- ═══════ BOARD ═══════ -->
+<div class="board">
 
-        <!-- ═══ IVAN ═══ -->
-        <tr class="group-header">
-          <td colspan="17">
-            <div class="group-label">
-              <div class="group-avatar" style="background:#3b82f6">IV</div>
-              <span class="group-name">Ivan</span>
-              <span class="group-role">Mobile / Frontend</span>
-              <span class="group-stats" id="grp-ivan">0 / 8</span>
-              <button class="add-task-btn" onclick="toggleAddForm('ivan')">＋ Tarea</button>
-            </div>
-          </td>
-        </tr>
-        <tr class="task-row" data-person="ivan"><td class="chk-col"><input type="checkbox" data-id="ivan-cert" data-person="ivan" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">Certificados — API Tiers</span><span class="task-meta">1 día · 08/04</span></div></td><td class="g-bar"><div class="bar bar-ivan"></div></td><td class="g-empty" colspan="14"></td></tr>
-        <tr class="task-row" data-person="ivan"><td class="chk-col"><input type="checkbox" data-id="ivan-levels" data-person="ivan" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">Levels — API Levels</span><span class="task-meta">1 día · 09/04</span></div></td><td class="g-empty"></td><td class="g-bar"><div class="bar bar-ivan"></div></td><td class="g-empty" colspan="13"></td></tr>
-        <tr class="task-row" data-person="ivan"><td class="chk-col"><input type="checkbox" data-id="ivan-puntos" data-person="ivan" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">Mostrar puntos (endpoint user)</span><span class="task-meta">1 día · 10/04</span></div></td><td class="g-empty" colspan="2"></td><td class="g-bar"><div class="bar bar-ivan"></div></td><td class="g-empty" colspan="12"></td></tr>
-        <tr class="task-row" data-person="ivan"><td class="chk-col"><input type="checkbox" data-id="ivan-back" data-person="ivan" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">Back en agenda — footer</span><span class="task-meta">1 día · 13/04</span></div></td><td class="g-empty" colspan="3"></td><td class="g-bar"><div class="bar bar-ivan"></div></td><td class="g-empty" colspan="11"></td></tr>
-        <tr class="task-row" data-person="ivan"><td class="chk-col"><input type="checkbox" data-id="ivan-locations" data-person="ivan" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">Locations — Zonas de trabajo</span><span class="task-meta">2 días · 14/04 – 15/04</span></div></td><td class="g-empty" colspan="4"></td><td class="g-bar" colspan="2"><div class="bar bar-ivan"></div></td><td class="g-empty" colspan="9"></td></tr>
-        <tr class="task-row" data-person="ivan"><td class="chk-col"><input type="checkbox" data-id="ivan-home" data-person="ivan" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">Home — Listar servicios (categories)</span><span class="task-meta">2 días · 16/04 – 17/04</span><span class="dep-tag">⚠ Espera Miguel #4</span></div></td><td class="g-empty" colspan="6"></td><td class="g-bar" colspan="2"><div class="bar bar-dep"></div></td><td class="g-empty" colspan="7"></td></tr>
-        <tr class="task-row" data-person="ivan"><td class="chk-col"><input type="checkbox" data-id="ivan-mockup" data-person="ivan" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">Mockup UX — Certificados</span><span class="task-meta">2 días · 20/04 – 21/04</span></div></td><td class="g-empty" colspan="8"></td><td class="g-bar" colspan="2"><div class="bar bar-ivan"></div></td><td class="g-empty" colspan="5"></td></tr>
-        <tr class="task-row" data-person="ivan"><td class="chk-col"><input type="checkbox" data-id="ivan-estilos" data-person="ivan" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">Estilos de texto — Definición global</span><span class="task-meta">2 días · 22/04 – 23/04</span></div></td><td class="g-empty" colspan="10"></td><td class="g-bar" colspan="2"><div class="bar bar-ivan"></div></td><td class="g-empty" colspan="3"></td></tr>
-        <tr class="add-task-form-row" id="add-form-ivan"><td colspan="17"><div class="add-task-form"><input type="text" id="new-task-ivan" placeholder="Nombre de la tarea..." onkeydown="if(event.key==='Enter')addTask('ivan')"><button class="btn-add" onclick="addTask('ivan')">Agregar</button><button class="btn-cancel" onclick="toggleAddForm('ivan')">Cancelar</button></div></td></tr>
-
-        <!-- ═══ MIGUEL ═══ -->
-        <tr class="group-header">
-          <td colspan="17">
-            <div class="group-label">
-              <div class="group-avatar" style="background:#10b981">MG</div>
-              <span class="group-name">Miguel</span>
-              <span class="group-role">Backend</span>
-              <span class="group-stats" id="grp-miguel">0 / 9</span>
-              <button class="add-task-btn" onclick="toggleAddForm('miguel')">＋ Tarea</button>
-            </div>
-          </td>
-        </tr>
-        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-1" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#1 — Endpoint points/balance</span><span class="task-meta">1 día · 08/04</span></div></td><td class="g-bar"><div class="bar bar-miguel"></div></td><td class="g-empty" colspan="14"></td></tr>
-        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-2" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#2 — Endpoints Points (users + admin)</span><span class="task-meta">1 día · 09/04</span></div></td><td class="g-empty"></td><td class="g-bar"><div class="bar bar-miguel"></div></td><td class="g-empty" colspan="13"></td></tr>
-        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-3" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#3 — Endpoints de agenda</span><span class="task-meta">1 día · 10/04</span></div></td><td class="g-empty" colspan="2"></td><td class="g-bar"><div class="bar bar-miguel"></div></td><td class="g-empty" colspan="12"></td></tr>
-        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-4" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#4 — Endpoints Categories</span><span class="task-meta">2 días · 13/04 – 14/04</span><span class="dep-tag">⚠ Ivan espera este task</span></div></td><td class="g-empty" colspan="3"></td><td class="g-bar" colspan="2"><div class="bar bar-dep"></div></td><td class="g-empty" colspan="10"></td></tr>
-        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-5" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#5 — Builder methods (home rows backend)</span><span class="task-meta">4 días · 15/04 – 20/04</span></div></td><td class="g-empty" colspan="5"></td><td class="g-bar" colspan="4"><div class="bar bar-miguel"></div></td><td class="g-empty" colspan="6"></td></tr>
-        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-6" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#6 — Bugs Location / Zonas de trabajo</span><span class="task-meta">2 días · 21/04 – 22/04</span></div></td><td class="g-empty" colspan="9"></td><td class="g-bar" colspan="2"><div class="bar bar-miguel"></div></td><td class="g-empty" colspan="4"></td></tr>
-        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-7" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#7 — Endpoints de mensajes</span><span class="task-meta">1 día · 23/04</span></div></td><td class="g-empty" colspan="11"></td><td class="g-bar"><div class="bar bar-miguel"></div></td><td class="g-empty" colspan="3"></td></tr>
-        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-8" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#8 — Integración endpoints pendientes</span><span class="task-meta">2 días · 24/04 – 27/04</span></div></td><td class="g-empty" colspan="12"></td><td class="g-bar" colspan="2"><div class="bar bar-miguel"></div></td><td class="g-empty"></td></tr>
-        <tr class="task-row" data-person="miguel"><td class="chk-col"><input type="checkbox" data-id="miguel-9" data-person="miguel" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">#9 — Registro de proveedores</span><span class="task-meta">2 días · 28/04+</span></div></td><td class="g-empty" colspan="14"></td><td class="g-bar"><div class="bar bar-overflow">+1d</div></td></tr>
-        <tr class="add-task-form-row" id="add-form-miguel"><td colspan="17"><div class="add-task-form"><input type="text" id="new-task-miguel" placeholder="Nombre de la tarea..." onkeydown="if(event.key==='Enter')addTask('miguel')"><button class="btn-add" onclick="addTask('miguel')">Agregar</button><button class="btn-cancel" onclick="toggleAddForm('miguel')">Cancelar</button></div></td></tr>
-
-        <!-- ═══ ELVIS ═══ -->
-        <tr class="group-header">
-          <td colspan="17">
-            <div class="group-label">
-              <div class="group-avatar" style="background:#8b5cf6">EL</div>
-              <span class="group-name">Elvis</span>
-              <span class="group-role">Mobile / Frontend</span>
-              <span class="group-stats" id="grp-elvis">0 / 4</span>
-              <button class="add-task-btn" onclick="toggleAddForm('elvis')">＋ Tarea</button>
-            </div>
-          </td>
-        </tr>
-        <tr class="task-row" data-person="elvis"><td class="chk-col"><input type="checkbox" data-id="elvis-01" data-person="elvis" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">TASK-01 — Agenda unificada + eventos</span><span class="task-meta">3 días · 08/04 – 10/04</span></div></td><td class="g-bar" colspan="3"><div class="bar bar-elvis"></div></td><td class="g-empty" colspan="12"></td></tr>
-        <tr class="task-row" data-person="elvis"><td class="chk-col"><input type="checkbox" data-id="elvis-04" data-person="elvis" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">TASK-04 — Home dinámico / widgets</span><span class="task-meta">1 día · 13/04</span></div></td><td class="g-empty" colspan="3"></td><td class="g-bar"><div class="bar bar-elvis"></div></td><td class="g-empty" colspan="11"></td></tr>
-        <tr class="task-row" data-person="elvis"><td class="chk-col"><input type="checkbox" data-id="elvis-02" data-person="elvis" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">TASK-02 — Búsqueda v2 guiada por IA</span><span class="task-meta">1 día · 14/04</span></div></td><td class="g-empty" colspan="4"></td><td class="g-bar"><div class="bar bar-elvis"></div></td><td class="g-empty" colspan="10"></td></tr>
-        <tr class="task-row" data-person="elvis"><td class="chk-col"><input type="checkbox" data-id="elvis-03" data-person="elvis" onchange="tick(this)"></td><td class="task-col"><div class="task-label"><span class="task-name">TASK-03 — Mensajes: UX + backend</span><span class="task-meta">1 día · 15/04</span></div></td><td class="g-empty" colspan="5"></td><td class="g-bar"><div class="bar bar-elvis"></div></td><td class="g-empty" colspan="9"></td></tr>
-        <tr class="add-task-form-row" id="add-form-elvis"><td colspan="17"><div class="add-task-form"><input type="text" id="new-task-elvis" placeholder="Nombre de la tarea..." onkeydown="if(event.key==='Enter')addTask('elvis')"><button class="btn-add" onclick="addTask('elvis')">Agregar</button><button class="btn-cancel" onclick="toggleAddForm('elvis')">Cancelar</button></div></td></tr>
-
-      </tbody>
-    </table>
+  <!-- IVAN -->
+  <div class="dev-section">
+    <div class="dev-header">
+      <div class="dev-avatar" style="background:#3b82f6">IV</div>
+      <span class="dev-name">Ivan</span>
+      <span class="dev-role">Mobile / Frontend</span>
+      <span class="dev-stats" id="stats-ivan">0 / 8 completadas</span>
+      <button class="add-task-btn" onclick="toggleAddForm('ivan')">＋ Tarea</button>
+    </div>
+    <div class="add-task-form-wrap" id="add-form-ivan">
+      <div class="add-task-form">
+        <input type="text" id="new-task-ivan" placeholder="Nombre de la tarea..." onkeydown="if(event.key==='Enter')addTask('ivan')">
+        <div class="days-wrap">
+          <span class="days-label">Días:</span>
+          <input type="number" id="new-days-ivan" min="1" max="60" placeholder="1">
+        </div>
+        <button class="btn-add" onclick="addTask('ivan')">Agregar</button>
+        <button class="btn-cancel" onclick="toggleAddForm('ivan')">Cancelar</button>
+      </div>
+    </div>
+    <div class="kanban-columns">
+      <div class="kanban-col col-todo" id="col-ivan-todo">
+        <div class="col-header">To-Do <span class="col-count">0</span></div>
+        <div class="col-body"></div>
+      </div>
+      <div class="kanban-col col-inprogress" id="col-ivan-inprogress">
+        <div class="col-header">In Progress <span class="col-count">0</span></div>
+        <div class="col-body"></div>
+      </div>
+      <div class="kanban-col col-done" id="col-ivan-done">
+        <div class="col-header">Done <span class="col-count">0</span></div>
+        <div class="col-body"></div>
+      </div>
+    </div>
   </div>
-</div>
+
+  <!-- MIGUEL -->
+  <div class="dev-section">
+    <div class="dev-header">
+      <div class="dev-avatar" style="background:#10b981">MG</div>
+      <span class="dev-name">Miguel</span>
+      <span class="dev-role">Backend</span>
+      <span class="dev-stats" id="stats-miguel">0 / 9 completadas</span>
+      <button class="add-task-btn" onclick="toggleAddForm('miguel')">＋ Tarea</button>
+    </div>
+    <div class="add-task-form-wrap" id="add-form-miguel">
+      <div class="add-task-form">
+        <input type="text" id="new-task-miguel" placeholder="Nombre de la tarea..." onkeydown="if(event.key==='Enter')addTask('miguel')">
+        <div class="days-wrap">
+          <span class="days-label">Días:</span>
+          <input type="number" id="new-days-miguel" min="1" max="60" placeholder="1">
+        </div>
+        <button class="btn-add" onclick="addTask('miguel')">Agregar</button>
+        <button class="btn-cancel" onclick="toggleAddForm('miguel')">Cancelar</button>
+      </div>
+    </div>
+    <div class="kanban-columns">
+      <div class="kanban-col col-todo" id="col-miguel-todo">
+        <div class="col-header">To-Do <span class="col-count">0</span></div>
+        <div class="col-body"></div>
+      </div>
+      <div class="kanban-col col-inprogress" id="col-miguel-inprogress">
+        <div class="col-header">In Progress <span class="col-count">0</span></div>
+        <div class="col-body"></div>
+      </div>
+      <div class="kanban-col col-done" id="col-miguel-done">
+        <div class="col-header">Done <span class="col-count">0</span></div>
+        <div class="col-body"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ELVIS -->
+  <div class="dev-section">
+    <div class="dev-header">
+      <div class="dev-avatar" style="background:#8b5cf6">EL</div>
+      <span class="dev-name">Elvis</span>
+      <span class="dev-role">Mobile / Frontend</span>
+      <span class="dev-stats" id="stats-elvis">0 / 4 completadas</span>
+      <button class="add-task-btn" onclick="toggleAddForm('elvis')">＋ Tarea</button>
+    </div>
+    <div class="add-task-form-wrap" id="add-form-elvis">
+      <div class="add-task-form">
+        <input type="text" id="new-task-elvis" placeholder="Nombre de la tarea..." onkeydown="if(event.key==='Enter')addTask('elvis')">
+        <div class="days-wrap">
+          <span class="days-label">Días:</span>
+          <input type="number" id="new-days-elvis" min="1" max="60" placeholder="1">
+        </div>
+        <button class="btn-add" onclick="addTask('elvis')">Agregar</button>
+        <button class="btn-cancel" onclick="toggleAddForm('elvis')">Cancelar</button>
+      </div>
+    </div>
+    <div class="kanban-columns">
+      <div class="kanban-col col-todo" id="col-elvis-todo">
+        <div class="col-header">To-Do <span class="col-count">0</span></div>
+        <div class="col-body"></div>
+      </div>
+      <div class="kanban-col col-inprogress" id="col-elvis-inprogress">
+        <div class="col-header">In Progress <span class="col-count">0</span></div>
+        <div class="col-body"></div>
+      </div>
+      <div class="kanban-col col-done" id="col-elvis-done">
+        <div class="col-header">Done <span class="col-count">0</span></div>
+        <div class="col-body"></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /board -->
 
 <script>
-  // ── SUPABASE CONFIG ───────────────────────────────────
+  // ── SUPABASE ──────────────────────────────────────────
   const { createClient } = supabase;
   const db = createClient(
     'https://bdkasufghbdxxzyuzqhg.supabase.co',
     'sb_publishable_phPYlls5KkT-OXQJ_X5xIQ_gUm7tAtr'
   );
 
-  // ── STATE ─────────────────────────────────────────────
-  const BASE_TOTALS = { ivan: 8, miguel: 9, elvis: 4 };
-  const BASE_GRAND  = 21;
-  const counts      = { ivan: 0, miguel: 0, elvis: 0 };
-  let customTasks   = [];
-  let saveTimer     = null;
+  // ── TASK DEFINITIONS ──────────────────────────────────
+  const TASK_DEFS = [
+    { id: 'ivan-cert',      person: 'ivan',   name: 'Certificados — API Tiers',              days: 1 },
+    { id: 'ivan-levels',    person: 'ivan',   name: 'Levels — API Levels',                   days: 1 },
+    { id: 'ivan-puntos',    person: 'ivan',   name: 'Mostrar puntos (endpoint user)',         days: 1 },
+    { id: 'ivan-back',      person: 'ivan',   name: 'Back en agenda — footer',               days: 1 },
+    { id: 'ivan-locations', person: 'ivan',   name: 'Locations — Zonas de trabajo',          days: 2 },
+    { id: 'ivan-home',      person: 'ivan',   name: 'Home — Listar servicios (categories)',  days: 2 },
+    { id: 'ivan-mockup',    person: 'ivan',   name: 'Mockup UX — Certificados',              days: 2 },
+    { id: 'ivan-estilos',   person: 'ivan',   name: 'Estilos de texto — Definición global',  days: 2 },
+    { id: 'miguel-1', person: 'miguel', name: '#1 — Endpoint points/balance',              days: 1 },
+    { id: 'miguel-2', person: 'miguel', name: '#2 — Endpoints Points (users + admin)',     days: 1 },
+    { id: 'miguel-3', person: 'miguel', name: '#3 — Endpoints de agenda',                  days: 1 },
+    { id: 'miguel-4', person: 'miguel', name: '#4 — Endpoints Categories',                 days: 2 },
+    { id: 'miguel-5', person: 'miguel', name: '#5 — Builder methods (home rows backend)',  days: 4 },
+    { id: 'miguel-6', person: 'miguel', name: '#6 — Bugs Location / Zonas de trabajo',    days: 2 },
+    { id: 'miguel-7', person: 'miguel', name: '#7 — Endpoints de mensajes',               days: 1 },
+    { id: 'miguel-8', person: 'miguel', name: '#8 — Integración endpoints pendientes',    days: 2 },
+    { id: 'miguel-9', person: 'miguel', name: '#9 — Registro de proveedores',             days: 2 },
+    { id: 'elvis-01', person: 'elvis', name: 'TASK-01 — Agenda unificada + eventos', days: 3 },
+    { id: 'elvis-04', person: 'elvis', name: 'TASK-04 — Home dinámico / widgets',    days: 1 },
+    { id: 'elvis-02', person: 'elvis', name: 'TASK-02 — Búsqueda v2 guiada por IA', days: 1 },
+    { id: 'elvis-03', person: 'elvis', name: 'TASK-03 — Mensajes: UX + backend',    days: 1 },
+  ];
 
-  function getTotals() {
-    const t = { ...BASE_TOTALS };
-    customTasks.forEach(ct => t[ct.person]++);
-    return t;
-  }
-  function getGrandTotal() { return BASE_GRAND + customTasks.length; }
+  const PERSONS = [
+    { id: 'ivan',   name: 'Ivan',   color: '#3b82f6' },
+    { id: 'miguel', name: 'Miguel', color: '#10b981' },
+    { id: 'elvis',  name: 'Elvis',  color: '#8b5cf6' },
+  ];
+
+  // ── STATE ─────────────────────────────────────────────
+  let taskStatus  = {};   // id → 'todo'|'inprogress'|'done'
+  let customTasks = [];   // [{ id, person, name, days }]
+  let saveTimer   = null;
+
+  function allTasks() { return [...TASK_DEFS, ...customTasks]; }
 
   // ── SAVE INDICATOR ────────────────────────────────────
   function showSave(type, msg) {
@@ -445,154 +481,160 @@
     if (type === 'saved') setTimeout(() => el.classList.remove('visible'), 2500);
   }
 
-  // ── LOAD STATUS ───────────────────────────────────────
+  // ── LOAD ──────────────────────────────────────────────
   async function loadStatus() {
     const { data, error } = await db
-      .from('sprint_status')
-      .select('data')
-      .eq('id', 1)
-      .single();
+      .from('sprint_status').select('data').eq('id', 1).single();
+    if (error) { console.error('Load error:', error); renderBoard(); return; }
 
-    if (error) { console.error('Load error:', error); return; }
+    const stored = data.data || {};
 
-    const status = data.data;
-
-    // Restore custom tasks first so their checkboxes exist in the DOM
-    if (Array.isArray(status._custom_tasks)) {
-      customTasks = status._custom_tasks;
-      customTasks.forEach(ct => renderCustomTask(ct));
+    if (Array.isArray(stored._custom_tasks)) {
+      customTasks = stored._custom_tasks;
     }
 
-    document.querySelectorAll('input[data-id]').forEach(cb => {
-      if (status[cb.dataset.id] === true) {
-        cb.checked = true;
-        cb.closest('tr').classList.add('done');
-        counts[cb.dataset.person]++;
-      }
+    allTasks().forEach(task => {
+      const val = stored[task.id];
+      if (val === true || val === 'done')          taskStatus[task.id] = 'done';
+      else if (val === 'todo')                      taskStatus[task.id] = 'todo';
+      else                                          taskStatus[task.id] = 'inprogress';
     });
-    refreshUI();
+
+    renderBoard();
   }
 
-  // ── SAVE STATUS ───────────────────────────────────────
+  // ── SAVE ──────────────────────────────────────────────
   async function pushStatus() {
-    const status = {};
-    document.querySelectorAll('input[data-id]').forEach(cb => {
-      status[cb.dataset.id] = cb.checked;
-    });
-    status._custom_tasks = customTasks;
+    const stored = { _custom_tasks: customTasks };
+    allTasks().forEach(t => { stored[t.id] = taskStatus[t.id] || 'inprogress'; });
 
     showSave('saving', '⏳ Guardando...');
     const { error } = await db
-      .from('sprint_status')
-      .update({ data: status })
-      .eq('id', 1);
-
+      .from('sprint_status').update({ data: stored }).eq('id', 1);
     if (error) { showSave('error', '❌ Error al guardar'); console.error(error); }
-    else        { showSave('saved', '✅ Guardado'); }
+    else       { showSave('saved', '✅ Guardado'); }
   }
 
-  // ── TICK ──────────────────────────────────────────────
-  function tick(cb) {
-    const person = cb.dataset.person;
-    if (cb.checked) {
-      counts[person]++;
-      cb.closest('tr').classList.add('done');
-      const ct = customTasks.find(t => t.id === cb.dataset.id);
-      if (ct) ct.done = true;
-    } else {
-      counts[person]--;
-      cb.closest('tr').classList.remove('done');
-      const ct = customTasks.find(t => t.id === cb.dataset.id);
-      if (ct) ct.done = false;
-    }
-    refreshUI();
+  function scheduleSave() {
     clearTimeout(saveTimer);
     saveTimer = setTimeout(pushStatus, 600);
   }
 
-  // ── UI ────────────────────────────────────────────────
-  function refreshUI() {
-    const totals = getTotals();
-    const gt     = getGrandTotal();
-    const total  = counts.ivan + counts.miguel + counts.elvis;
-    const pct    = Math.round((total / gt) * 100);
-    document.getElementById('pct').textContent       = pct + '%';
-    document.getElementById('bar-fill').style.width  = pct + '%';
-    document.getElementById('cnt-total').textContent = total + ' / ' + gt + ' tareas';
-    ['ivan','miguel','elvis'].forEach(p => {
-      document.getElementById('cnt-' + p).textContent = counts[p] + '/' + totals[p];
-      document.getElementById('grp-' + p).textContent = counts[p] + ' / ' + totals[p];
+  // ── MOVE TASK ─────────────────────────────────────────
+  function moveTask(id, direction) {
+    const steps = ['todo', 'inprogress', 'done'];
+    const idx = steps.indexOf(taskStatus[id] || 'inprogress');
+    if (direction === 'next' && idx < 2) taskStatus[id] = steps[idx + 1];
+    if (direction === 'prev' && idx > 0) taskStatus[id] = steps[idx - 1];
+    renderBoard();
+    scheduleSave();
+  }
+
+  // ── ADD TASK ──────────────────────────────────────────
+  function addTask(person) {
+    const nameEl = document.getElementById('new-task-' + person);
+    const daysEl = document.getElementById('new-days-' + person);
+    const name   = nameEl.value.trim();
+    if (!name) { nameEl.focus(); return; }
+    const days = parseInt(daysEl.value) || null;
+    const task = { id: crypto.randomUUID(), person, name, days };
+    customTasks.push(task);
+    taskStatus[task.id] = 'todo';
+    toggleAddForm(person);
+    renderBoard();
+    scheduleSave();
+  }
+
+  // ── DELETE TASK ───────────────────────────────────────
+  function deleteTask(id) {
+    const idx = customTasks.findIndex(t => t.id === id);
+    if (idx === -1) return;
+    customTasks.splice(idx, 1);
+    delete taskStatus[id];
+    renderBoard();
+    scheduleSave();
+  }
+
+  // ── TOGGLE FORM ───────────────────────────────────────
+  function toggleAddForm(person) {
+    const wrap  = document.getElementById('add-form-' + person);
+    const input = document.getElementById('new-task-' + person);
+    const open  = wrap.classList.toggle('visible');
+    if (open) {
+      document.getElementById('new-task-' + person).value = '';
+      document.getElementById('new-days-' + person).value = '';
+      input.focus();
+    }
+  }
+
+  // ── RENDER BOARD ──────────────────────────────────────
+  function renderBoard() {
+    const tasks = allTasks();
+    const totalDone  = tasks.filter(t => taskStatus[t.id] === 'done').length;
+    const totalCount = tasks.length;
+    const pct = totalCount ? Math.round((totalDone / totalCount) * 100) : 0;
+
+    document.getElementById('pct').textContent      = pct + '%';
+    document.getElementById('bar-fill').style.width = pct + '%';
+    document.getElementById('cnt-total').textContent = totalDone + ' / ' + totalCount + ' tareas';
+
+    PERSONS.forEach(person => {
+      const pTasks = tasks.filter(t => t.person === person.id);
+      const pDone  = pTasks.filter(t => taskStatus[t.id] === 'done').length;
+
+      document.getElementById('cnt-' + person.id).textContent   = pDone + '/' + pTasks.length;
+      document.getElementById('stats-' + person.id).textContent = pDone + ' / ' + pTasks.length + ' completadas';
+
+      ['todo', 'inprogress', 'done'].forEach(status => {
+        const col   = document.getElementById('col-' + person.id + '-' + status);
+        const body  = col.querySelector('.col-body');
+        const count = col.querySelector('.col-count');
+        const group = pTasks.filter(t => taskStatus[t.id] === status);
+        count.textContent = group.length;
+        body.innerHTML    = '';
+        group.forEach(task => body.appendChild(buildCard(task, status, person.color)));
+      });
     });
   }
 
-  // ── TOGGLE ADD FORM ───────────────────────────────────
-  function toggleAddForm(person) {
-    const row = document.getElementById('add-form-' + person);
-    const input = document.getElementById('new-task-' + person);
-    const isVisible = row.classList.toggle('visible');
-    if (isVisible) { input.value = ''; input.focus(); }
-  }
+  // ── BUILD CARD ────────────────────────────────────────
+  function buildCard(task, status, color) {
+    const isCustom = customTasks.some(ct => ct.id === task.id);
+    const card = document.createElement('div');
+    card.className = 'task-card' + (status === 'done' ? ' done-card' : '');
+    card.style.setProperty('--person-color', color);
 
-  // ── ADD CUSTOM TASK ───────────────────────────────────
-  function addTask(person) {
-    const input = document.getElementById('new-task-' + person);
-    const name  = input.value.trim();
-    if (!name) { input.focus(); return; }
+    const daysText = task.days
+      ? task.days + (task.days === 1 ? ' día' : ' días')
+      : '';
 
-    const task = { id: crypto.randomUUID(), person, name, done: false };
-    customTasks.push(task);
-    renderCustomTask(task);
-    toggleAddForm(person);
-    refreshUI();
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(pushStatus, 600);
-  }
+    let moveBtns = '<div class="move-btns">';
+    if (status !== 'todo') {
+      moveBtns += `<button class="btn-move-prev" onclick="moveTask('${task.id}','prev')">← ${status === 'done' ? 'Reabrir' : 'To-Do'}</button>`;
+    }
+    if (status !== 'done') {
+      const lbl = status === 'todo' ? 'Iniciar →' : 'Completar →';
+      const cls = status === 'inprogress' ? ' complete' : '';
+      moveBtns += `<button class="btn-move-next${cls}" onclick="moveTask('${task.id}','next')">${lbl}</button>`;
+    }
+    moveBtns += '</div>';
 
-  // ── DELETE CUSTOM TASK ────────────────────────────────
-  function deleteTask(id, person) {
-    const idx = customTasks.findIndex(t => t.id === id);
-    if (idx === -1) return;
-    const wasDone = customTasks[idx].done;
-    customTasks.splice(idx, 1);
+    const deleteBtn = isCustom
+      ? `<button class="btn-delete-card" onclick="deleteTask('${task.id}')" title="Eliminar">✕</button>`
+      : '<button class="btn-delete-card" style="visibility:hidden">✕</button>';
 
-    const row = document.querySelector('tr[data-custom-id="' + id + '"]');
-    if (row) row.remove();
-
-    if (wasDone) counts[person]--;
-    refreshUI();
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(pushStatus, 600);
-  }
-
-  // ── RENDER CUSTOM TASK ────────────────────────────────
-  function renderCustomTask(task) {
-    const formRow = document.getElementById('add-form-' + task.person);
-    const tr = document.createElement('tr');
-    tr.className = 'task-row' + (task.done ? ' done' : '');
-    tr.dataset.person   = task.person;
-    tr.dataset.customId = task.id;
-
-    tr.innerHTML =
-      '<td class="chk-col">' +
-        '<input type="checkbox" data-id="' + task.id + '" data-person="' + task.person + '" onchange="tick(this)"' + (task.done ? ' checked' : '') + '>' +
-      '</td>' +
-      '<td class="task-col">' +
-        '<div class="task-label" style="display:flex;align-items:center;justify-content:space-between;">' +
-          '<div>' +
-            '<span class="task-name">' + escapeHtml(task.name) + '</span>' +
-            '<span class="task-meta custom-badge">✦ tarea personalizada</span>' +
-          '</div>' +
-          '<button class="task-delete-btn" onclick="deleteTask(\'' + task.id + '\',\'' + task.person + '\')" title="Eliminar tarea">✕</button>' +
-        '</div>' +
-      '</td>' +
-      '<td class="g-empty" colspan="15"></td>';
-
-    formRow.parentNode.insertBefore(tr, formRow);
+    card.innerHTML = `
+      <div class="task-card-name">${escapeHtml(task.name)}</div>
+      ${daysText  ? `<div class="task-card-meta">🕐 ${daysText}</div>` : ''}
+      ${isCustom  ? '<div class="task-card-meta custom-badge">✦ personalizada</div>' : ''}
+      <div class="task-card-footer">${moveBtns}${deleteBtn}</div>
+    `;
+    return card;
   }
 
   // ── ESCAPE HTML ───────────────────────────────────────
-  function escapeHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  function escapeHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
   // ── INIT ──────────────────────────────────────────────
